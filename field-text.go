@@ -13,15 +13,19 @@ type TextField struct {
 
 func (prototype TextField) Create(meta FieldMeta) Field {
 
-	field := new(TextareaField)
+	field := new(TextField)
 
 	field.SetName(meta.Name)
 	field.SetLabel(meta.Label)
 	field.SetValue(meta.Value)
 
-	field.Type = "textarea"
+	field.Type = "text"
 
 	return field
+}
+
+func (field TextField) GetType() string {
+	return "text"
 }
 
 func (field TextField) GetLabel() string {
@@ -48,7 +52,7 @@ func (field *TextField) SetValue(value interface{}) {
 	field.Value = value.(string)
 }
 
-func (field TextField) IsValid(value interface{}) (result bool, err *string) {
+func (field *TextField) IsValid(value interface{}) (result bool, err *string) {
 	val, ok := value.(string)
 
 	// @TODO ok = validators.Validate(val) && ok

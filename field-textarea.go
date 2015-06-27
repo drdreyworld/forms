@@ -24,6 +24,10 @@ func (prototype TextareaField) Create(meta FieldMeta) Field {
 	return field
 }
 
+func (field TextareaField) GetType() string {
+	return "textarea"
+}
+
 func (field TextareaField) GetLabel() string {
 	return field.Label
 }
@@ -48,7 +52,7 @@ func (field *TextareaField) SetValue(value interface{}) {
 	field.Value = value.(string)
 }
 
-func (field TextareaField) IsValid(value interface{}) (result bool, err *string) {
+func (field *TextareaField) IsValid(value interface{}) (result bool, err *string) {
 	val, ok := value.(string)
 
 	// @TODO ok = validators.Validate(val) && ok

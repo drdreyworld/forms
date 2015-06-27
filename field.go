@@ -2,6 +2,7 @@ package forms
 
 type Field interface {
 	Create(meta FieldMeta) Field
+	GetType() string
 	GetLabel() string
 	SetLabel(label string)
 	GetName() string
