@@ -9,6 +9,7 @@ type Text struct {
 	Label string
 	Value string
 	Type  string
+	Order int
 }
 
 func (prototype Text) Create(meta FieldMeta) Field {
@@ -62,4 +63,12 @@ func (field *Text) IsValid(value interface{}) (result bool, err *string) {
 	}
 
 	return ok, nil
+}
+
+func (field *Text) GetOrder() int {
+	return field.Order
+}
+
+func (field *Text) SetOrder(order int) {
+	field.Order = order
 }

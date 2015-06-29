@@ -9,6 +9,7 @@ type Checkbox struct {
 	Label string
 	Value int
 	Type  string
+	Order int
 }
 
 func (prototype Checkbox) Create(meta FieldMeta) Field {
@@ -61,4 +62,12 @@ func (field *Checkbox) IsValid(value interface{}) (result bool, err *string) {
 	}
 
 	return true, nil
+}
+
+func (field *Checkbox) GetOrder() int {
+	return field.Order
+}
+
+func (field *Checkbox) SetOrder(order int) {
+	field.Order = order
 }

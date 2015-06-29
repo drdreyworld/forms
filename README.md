@@ -31,40 +31,45 @@ func (item NewsItem) GetForm() forms.FormMeta {
 	result := forms.FormMeta{
 		Name:  "AdminNewsForm",
 		Label: "Редактировать новость",
-		Fields: map[string]fields.FieldMeta{
-			"title": fields.FieldMeta{
+		Fields: fields.FieldsMeta{
+			fields.FieldMeta{
 				Name:  "title",
 				Type:  "text",
 				Label: "Заголовок",
 				Value: item.title,
+				Order: 0,
 			},
-			"is_published": fields.FieldMeta{
+			fields.FieldMeta{
 				Name:  "is_published",
 				Type:  "checkbox",
 				Label: "Новость опубликована",
 				Value: item.is_published,
+				Order: 1,
 			},
-			"image": fields.FieldMeta{
+			fields.FieldMeta{
 				Name:  "image",
 				Type:  "text",
 				Label: "URL картинки",
 				Value: item.image,
+				Order: 2,
 			},
-			"anounce": fields.FieldMeta{
+			fields.FieldMeta{
 				Name:  "anounce",
 				Type:  "textarea",
 				Label: "Анонс",
 				Value: item.anounce,
+				Order: 3,
 			},
-			"content": fields.FieldMeta{
+			fields.FieldMeta{
 				Name:  "content",
 				Type:  "textarea",
 				Label: "Полный текст новости",
 				Value: item.anounce,
+				Order: 4,
 			},
 		},
-		Buttons: map[string]fields.FieldMeta{
-			"save": fields.FieldMeta{
+		Buttons: fields.FieldsMeta{
+			fields.FieldMeta{
 				Name:  "save",
 				Type:  "submit",
 				Label: "Сохранить",

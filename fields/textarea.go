@@ -9,6 +9,7 @@ type Textarea struct {
 	Label string
 	Value string
 	Type  string
+	Order int
 }
 
 func (prototype Textarea) Create(meta FieldMeta) Field {
@@ -62,4 +63,12 @@ func (field *Textarea) IsValid(value interface{}) (result bool, err *string) {
 	}
 
 	return ok, nil
+}
+
+func (field *Textarea) GetOrder() int {
+	return field.Order
+}
+
+func (field *Textarea) SetOrder(order int) {
+	field.Order = order
 }

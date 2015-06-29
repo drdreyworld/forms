@@ -9,6 +9,7 @@ type Button struct {
 	Label string
 	Value string
 	Type  string
+	Order int
 }
 
 func (prototype Button) Create(meta FieldMeta) Field {
@@ -54,4 +55,12 @@ func (field *Button) SetValue(value interface{}) {
 
 func (field Button) IsValid(value interface{}) (result bool, err *string) {
 	return true, nil
+}
+
+func (field *Button) GetOrder() int {
+	return field.Order
+}
+
+func (field *Button) SetOrder(order int) {
+	field.Order = order
 }

@@ -9,6 +9,7 @@ type Submit struct {
 	Label string
 	Value string
 	Type  string
+	Order int
 }
 
 func (prototype Submit) Create(meta FieldMeta) Field {
@@ -54,4 +55,12 @@ func (field *Submit) SetValue(value interface{}) {
 
 func (field Submit) IsValid(value interface{}) (result bool, err *string) {
 	return true, nil
+}
+
+func (field *Submit) GetOrder() int {
+	return field.Order
+}
+
+func (field *Submit) SetOrder(order int) {
+	field.Order = order
 }

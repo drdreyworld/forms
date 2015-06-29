@@ -8,21 +8,22 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"sort"
 )
 
 type Form struct {
 	Name          string
 	Label         string
-	Fields        map[string]fields.Field
-	Buttons       map[string]fields.Field
+	Fields        fields.Fields
+	Buttons       fields.Fields
 	TemplatesPath string
 }
 
 type FormMeta struct {
 	Name    string
 	Label   string
-	Fields  map[string]fields.FieldMeta
-	Buttons map[string]fields.FieldMeta
+	Fields  fields.FieldsMeta
+	Buttons fields.FieldsMeta
 }
 
 func checkErr(err error) {
@@ -41,8 +42,8 @@ func (form *Form) GetTemplatesPath() string {
 
 func (form *Form) IsValid(r *http.Request) bool {
 	result := true
-	for name, field := range form.Fields {
-		isValid, _ := field.IsValid(r.PostFormValue(name))
+	for _, field := range form.Fields {
+		isValid, _ := field.IsValid(r.PostFormValue(field.GetName()))
 		result = isValid && result
 	}
 	return result
@@ -50,8 +51,8 @@ func (form *Form) IsValid(r *http.Request) bool {
 
 func (form *Form) GetValues() map[string]interface{} {
 	result := make(map[string]interface{})
-	for name, field := range form.Fields {
-		result[name] = field.GetValue()
+	for _, field := range form.Fields {
+		result[field.GetName()] = field.GetValue()
 	}
 	return result
 }
@@ -77,10 +78,11 @@ func (form *Form) RenderField(field fields.Field) template.HTML {
 func (form *Form) CreateFromMeta(meta FormMeta) {
 	form.Name = meta.Name
 	form.Label = meta.Label
-	form.Fields = make(map[string]fields.Field)
-	form.Buttons = make(map[string]fields.Field)
+	form.Fields = make(fields.Fields, 0, len(meta.Fields))
+	form.Buttons = make(fields.Fields, 0, len(meta.Buttons))
 
 	if len(meta.Fields) > 0 {
+		sort.Sort(meta.Fields)
 		for _, item := range meta.Fields {
 
 			field, err := fields.Factory.CreateField(item)
@@ -89,10 +91,11 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 				panic(err)
 			}
 
-			form.Fields[(*field).GetName()] = *field
+			form.Fields = append(form.Fields, *field)
 		}
 	}
 	if len(meta.Buttons) > 0 {
+		sort.Sort(meta.Buttons)
 		for _, item := range meta.Buttons {
 
 			field, err := fields.Factory.CreateField(item)
@@ -101,9 +104,12 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 				panic(err)
 			}
 
-			form.Buttons[(*field).GetName()] = *field
+			form.Buttons = append(form.Buttons, *field)
 		}
 	}
+
+	// form.Fields = sort.Sort(form.Fields)
+	// form.Buttons = sort.Sort(form.Buttons)
 }
 
 func (form *Form) Unmarshal(jsonBytes []byte) {
