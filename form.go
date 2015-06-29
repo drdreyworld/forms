@@ -4,29 +4,39 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/drdreyworld/forms/fields"
 	"html/template"
 	"net/http"
 	"path/filepath"
 )
 
 type Form struct {
-	Name    string
-	Label   string
-	Fields  map[string]Field
-	Buttons map[string]Field
+	Name          string
+	Label         string
+	Fields        map[string]fields.Field
+	Buttons       map[string]fields.Field
+	TemplatesPath string
 }
 
 type FormMeta struct {
 	Name    string
 	Label   string
-	Fields  map[string]FieldMeta
-	Buttons map[string]FieldMeta
+	Fields  map[string]fields.FieldMeta
+	Buttons map[string]fields.FieldMeta
 }
 
 func checkErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (form *Form) SetTemplatesPath(path string) {
+	form.TemplatesPath = path
+}
+
+func (form *Form) GetTemplatesPath() string {
+	return form.TemplatesPath
 }
 
 func (form *Form) IsValid(r *http.Request) bool {
@@ -46,10 +56,10 @@ func (form *Form) GetValues() map[string]interface{} {
 	return result
 }
 
-func (form *Form) RenderField(field Field) template.HTML {
+func (form *Form) RenderField(field fields.Field) template.HTML {
 
 	name := field.GetType()
-	path := "/Users/andrey/GoProjects/src/github.com/drdreyworld/news/templates/view/admin/form-edit"
+	path := form.GetTemplatesPath()
 
 	filename, err := filepath.Abs(fmt.Sprintf("%s/%s.html", path, name))
 	checkErr(err)
@@ -67,13 +77,13 @@ func (form *Form) RenderField(field Field) template.HTML {
 func (form *Form) CreateFromMeta(meta FormMeta) {
 	form.Name = meta.Name
 	form.Label = meta.Label
-	form.Fields = make(map[string]Field)
-	form.Buttons = make(map[string]Field)
+	form.Fields = make(map[string]fields.Field)
+	form.Buttons = make(map[string]fields.Field)
 
 	if len(meta.Fields) > 0 {
 		for _, item := range meta.Fields {
 
-			field, err := FieldsFactory.CreateField(item)
+			field, err := fields.Factory.CreateField(item)
 
 			if err != nil {
 				panic(err)
@@ -85,7 +95,7 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 	if len(meta.Buttons) > 0 {
 		for _, item := range meta.Buttons {
 
-			field, err := FieldsFactory.CreateField(item)
+			field, err := fields.Factory.CreateField(item)
 
 			if err != nil {
 				panic(err)

@@ -1,4 +1,4 @@
-package forms
+package fields
 
 type Field interface {
 	Create(meta FieldMeta) Field

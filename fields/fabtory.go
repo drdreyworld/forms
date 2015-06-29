@@ -1,28 +1,28 @@
-package forms
+package fields
 
 import (
 	"errors"
 	"fmt"
 )
 
-var FieldsFactory = FieldsFactoryStruct{}
+var Factory = FieldsFactory{}
 
-type FieldsFactoryStruct struct {
+type FieldsFactory struct {
 	registry map[string]Field
 }
 
-func (factory *FieldsFactoryStruct) Register(key string, prototype Field) {
+func (factory *FieldsFactory) Register(key string, prototype Field) {
 	if factory.registry == nil {
 		factory.registry = make(map[string]Field)
 	}
 	factory.registry[key] = prototype
 }
 
-func (factory *FieldsFactoryStruct) Unregister(key string) {
+func (factory *FieldsFactory) Unregister(key string) {
 	delete(factory.registry, key)
 }
 
-func (factory FieldsFactoryStruct) CreateField(meta FieldMeta) (result *Field, err error) {
+func (factory FieldsFactory) CreateField(meta FieldMeta) (result *Field, err error) {
 
 	prototype, exists := factory.registry[meta.Type]
 
