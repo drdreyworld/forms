@@ -1,0 +1,27 @@
+{{define "edit"}}
+
+{{ $form := .form }}
+<form method="post" class="form-horizontal">
+	<div class="panel panel-default">
+		<div class="panel-heading">{{ $form.Label }}</div>
+		<div class="panel-body">
+			{{ range $key, $field := $form.Fields }}
+				<div class="panel-group">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">{{ $field.GetLabel }}</label>
+						<div class="col-sm-10">
+							{{ $form.RenderField $field }}
+						</div>
+					</div>
+				</div>
+			{{ end }}
+		</div>
+		<div class="panel-footer" style="text-align: right">
+			{{ range $key, $button := $form.Buttons }}
+				{{ $form.RenderField $button }}
+			{{ end }}
+		</div>
+	</div>
+</form>
+
+{{end}}

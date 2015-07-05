@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/drdreyworld/forms/fields"
+	"github.com/drdreyworld/webapp"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -24,12 +25,6 @@ type FormMeta struct {
 	Label   string
 	Fields  fields.FieldsMeta
 	Buttons fields.FieldsMeta
-}
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
 
 func (form *Form) SetTemplatesPath(path string) {
@@ -63,14 +58,14 @@ func (form *Form) RenderField(field fields.Field) template.HTML {
 	path := form.GetTemplatesPath()
 
 	filename, err := filepath.Abs(fmt.Sprintf("%s/%s.html", path, name))
-	checkErr(err)
+	webapp.Panic(err)
 
 	tmpl, err := template.New("").ParseFiles(filename)
-	checkErr(err)
+	webapp.Panic(err)
 
 	buffer := new(bytes.Buffer)
 	err = tmpl.ExecuteTemplate(buffer, name, field)
-	checkErr(err)
+	webapp.Panic(err)
 
 	return template.HTML(buffer.String())
 }
@@ -116,14 +111,14 @@ func (form *Form) Unmarshal(jsonBytes []byte) {
 
 	meta := FormMeta{}
 
-	checkErr(json.Unmarshal(jsonBytes, &meta))
+	webapp.Panic(json.Unmarshal(jsonBytes, &meta))
 
 	form.CreateFromMeta(meta)
 }
 
 func (form Form) Marshal() []byte {
 	result, err := json.Marshal(form)
-	checkErr(err)
+	webapp.Panic(err)
 
 	return result
 }
