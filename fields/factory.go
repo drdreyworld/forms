@@ -22,15 +22,9 @@ func (factory *FieldsFactory) Unregister(key string) {
 	delete(factory.registry, key)
 }
 
-func (factory FieldsFactory) CreateField(meta FieldMeta) (result *Field, err error) {
-
-	prototype, exists := factory.registry[meta.Type]
-
-	if !exists {
-		return nil, errors.New(fmt.Sprintf("Field type not registered '%s'", meta.Type))
+func (factory FieldsFactory) CreateField(meta FieldMeta) (result Field, err error) {
+	if prototype, exists := factory.registry[meta.Type]; exists {
+		return prototype.Create(meta), nil
 	}
-
-	field := prototype.Create(meta)
-
-	return &field, nil
+	return nil, errors.New(fmt.Sprintf("Field type not registered '%s'", meta.Type))
 }

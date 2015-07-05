@@ -1,0 +1,6 @@
+{{define "datetime"}}
+<input type="text" name="{{ .GetName }}" value="{{ .GetValueInHumanFormat }}" class="form-control datetime">
+{{ if .GetError }}
+	<div class="error">{{ .GetError }}</div>
+{{end}}
+{{end}}

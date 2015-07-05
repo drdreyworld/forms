@@ -1,7 +1,9 @@
 {{define "checkbox"}}
-	
-	<div>
-		<input type="checkbox" name="{{ .GetName }}" value="1" {{ if .GetValue }} checked="checked" {{end}}>
-	</div>
-	<input type="hidden" name="{{ .GetName }}" value="0">
+<div>
+	<input type="checkbox" name="{{ .GetName }}" value="1" {{ if .GetValue }} checked="checked" {{end}}>
+</div>
+<input type="hidden" name="{{ .GetName }}" value="0">
+{{ if .GetError }}
+	<div class="error">{{ .GetError }}</div>
+{{end}}
 {{end}}

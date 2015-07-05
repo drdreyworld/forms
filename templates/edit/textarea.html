@@ -1,3 +1,6 @@
 {{define "textarea"}}
 <textarea class="form-control" name="{{ .GetName }}" rows="5">{{ .GetValue }}</textarea>
+{{ if .GetError }}
+	<div class="error">{{ .GetError }}</div>
+{{end}}
 {{end}}

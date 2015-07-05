@@ -1,5 +1,9 @@
 package fields
 
+import (
+	"github.com/drdreyworld/forms/validators"
+)
+
 func init() {
 	Factory.Register("submit", new(Submit))
 }
@@ -13,16 +17,18 @@ type Submit struct {
 }
 
 func (prototype Submit) Create(meta FieldMeta) Field {
-
 	field := new(Submit)
-
+	field.Type = "submit"
 	field.SetName(meta.Name)
 	field.SetLabel(meta.Label)
 	field.SetValue(meta.Value)
-
-	field.Type = "submit"
-
 	return field
+}
+
+func (field *Submit) SetValidators(validators validators.Validators) {}
+
+func (field Submit) GetError() string {
+	return ""
 }
 
 func (field Submit) GetType() string {

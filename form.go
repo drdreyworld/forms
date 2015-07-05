@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/drdreyworld/forms/fields"
+	"github.com/drdreyworld/forms/validators"
 	"github.com/drdreyworld/webapp"
 	"html/template"
 	"net/http"
@@ -79,46 +80,38 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 	if len(meta.Fields) > 0 {
 		sort.Sort(meta.Fields)
 		for _, item := range meta.Fields {
-
 			field, err := fields.Factory.CreateField(item)
+			webapp.Panic(err)
 
-			if err != nil {
-				panic(err)
+			fieldValidators := make(validators.Validators, 0, len(item.Validators))
+			for _, validatorMeta := range item.Validators {
+				fieldValidator, err := validators.Factory.CreateValidator(validatorMeta)
+				webapp.Panic(err)
+				fieldValidators = append(fieldValidators, fieldValidator)
 			}
+			field.SetValidators(fieldValidators)
 
-			form.Fields = append(form.Fields, *field)
+			form.Fields = append(form.Fields, field)
 		}
 	}
 	if len(meta.Buttons) > 0 {
 		sort.Sort(meta.Buttons)
 		for _, item := range meta.Buttons {
-
 			field, err := fields.Factory.CreateField(item)
-
-			if err != nil {
-				panic(err)
-			}
-
-			form.Buttons = append(form.Buttons, *field)
+			webapp.Panic(err)
+			form.Buttons = append(form.Buttons, field)
 		}
 	}
-
-	// form.Fields = sort.Sort(form.Fields)
-	// form.Buttons = sort.Sort(form.Buttons)
 }
 
 func (form *Form) Unmarshal(jsonBytes []byte) {
-
 	meta := FormMeta{}
-
 	webapp.Panic(json.Unmarshal(jsonBytes, &meta))
-
 	form.CreateFromMeta(meta)
 }
 
 func (form Form) Marshal() []byte {
 	result, err := json.Marshal(form)
 	webapp.Panic(err)
-
 	return result
 }

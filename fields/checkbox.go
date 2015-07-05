@@ -1,28 +1,38 @@
 package fields
 
+import (
+	"github.com/drdreyworld/forms/validators"
+)
+
 func init() {
 	Factory.Register("checkbox", new(Checkbox))
 }
 
 type Checkbox struct {
-	Name  string
-	Label string
-	Value int
-	Type  string
-	Order int
+	Name       string
+	Label      string
+	Value      int
+	Type       string
+	Order      int
+	Error      string
+	Validators validators.Validators
 }
 
 func (prototype Checkbox) Create(meta FieldMeta) Field {
-
 	field := new(Checkbox)
-
+	field.Type = "checkbox"
 	field.SetName(meta.Name)
 	field.SetLabel(meta.Label)
 	field.SetValue(meta.Value)
-
-	field.Type = "checkbox"
-
 	return field
+}
+
+func (field *Checkbox) SetValidators(validators validators.Validators) {
+	field.Validators = validators
+}
+
+func (field Checkbox) GetError() string {
+	return field.Error
 }
 
 func (field Checkbox) GetType() string {
@@ -54,13 +64,11 @@ func (field *Checkbox) SetValue(value interface{}) {
 }
 
 func (field *Checkbox) IsValid(value interface{}) (result bool, err *string) {
-
 	if value.(string) == "1" {
 		field.Value = 1
 	} else {
 		field.Value = 0
 	}
-
 	return true, nil
 }
 

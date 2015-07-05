@@ -1,5 +1,9 @@
 package fields
 
+import (
+	"github.com/drdreyworld/forms/validators"
+)
+
 type Field interface {
 	Create(meta FieldMeta) Field
 	GetType() string
@@ -12,6 +16,8 @@ type Field interface {
 	IsValid(value interface{}) (result bool, err *string)
 	GetOrder() int
 	SetOrder(order int)
+	SetValidators(validators validators.Validators)
+	GetError() string
 }
 
 type Fields []Field
@@ -29,11 +35,12 @@ func (fields Fields) Swap(i, j int) {
 }
 
 type FieldMeta struct {
-	Name  string
-	Type  string
-	Value interface{}
-	Label string
-	Order int
+	Name       string
+	Type       string
+	Value      interface{}
+	Label      string
+	Order      int
+	Validators validators.ValidatorsMeta
 }
 
 type FieldsMeta []FieldMeta

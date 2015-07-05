@@ -1,3 +1,6 @@
 {{define "text"}}
 <input type="text" name="{{ .GetName }}" value="{{ .GetValue }}" class="form-control">
+{{ if .GetError }}
+	<div class="error">{{ .GetError }}</div>
+{{end}}
 {{end}}
