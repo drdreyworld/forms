@@ -65,8 +65,8 @@ func (field DateTime) GetValueInHumanFormat() interface{} {
 		return ""
 	}
 
-	if t, err := time.Parse("2006-02-01 15:04:05", field.Value); err == nil {
-		return t.Format("01.02.2006 15:04")
+	if t, err := time.Parse("2006-01-02 15:04:05", field.Value); err == nil {
+		return t.Format("02.01.2006 15:04")
 	}
 	return field.Value
 }
@@ -84,8 +84,8 @@ func (field *DateTime) IsValid(value interface{}) (result bool, err *string) {
 		}
 	}
 	if result {
-		t, _ := time.Parse("01.02.2006 15:04", field.Value)
-		field.Value = t.Format("2006-02-01 15:04:05")
+		t, _ := time.Parse("02.01.2006 15:04", field.Value)
+		field.Value = t.Format("2006-01-02 15:04:05")
 	}
 	return result, nil
 }
