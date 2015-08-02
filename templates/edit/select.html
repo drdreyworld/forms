@@ -1,0 +1,15 @@
+{{define "select"}}
+	<select name="{{ .GetName }}" class="form-control">
+		{{ $current := .GetValue }}
+		{{ range $key, $option := .GetValueOptions }}
+			{{ if $option.IsSelected $current }}
+				<option value="{{ $option.Value }}" selected="selected">{{ $option.Title }}</option>
+			{{ else }}
+				<option value="{{ $option.Value }}">{{ $option.Title }}</option>
+			{{ end }}
+		{{ end }}
+	</select>
+	{{ if .GetError }}
+		<div class="error">{{ .GetError }}</div>
+	{{end}}
+{{end}}
