@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/drdreyworld/forms/fields"
-	"github.com/drdreyworld/forms/validators"
+	// "github.com/drdreyworld/forms/validators"
 	"github.com/drdreyworld/webapp"
 	"html/template"
 	"net/http"
@@ -53,6 +53,13 @@ func (form *Form) GetValues() map[string]interface{} {
 	return result
 }
 
+func (form *Form) GetValue(name string) interface{} {
+	if field, ok := form.Fields.GetField(name); ok {
+		return field.GetValue()
+	}
+	return nil
+}
+
 func (form *Form) RenderField(field fields.Field) template.HTML {
 
 	name := field.GetType()
@@ -83,13 +90,13 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 			field, err := fields.Factory.CreateField(item)
 			webapp.Panic(err)
 
-			fieldValidators := make(validators.Validators, 0, len(item.Validators))
-			for _, validatorMeta := range item.Validators {
-				fieldValidator, err := validators.Factory.CreateValidator(validatorMeta)
-				webapp.Panic(err)
-				fieldValidators = append(fieldValidators, fieldValidator)
-			}
-			field.SetValidators(fieldValidators)
+			// fieldValidators := make(validators.Validators, 0, len(item.Validators))
+			// for _, validatorMeta := range item.Validators {
+			// 	fieldValidator, err := validators.Factory.CreateValidator(validatorMeta)
+			// 	webapp.Panic(err)
+			// 	fieldValidators = append(fieldValidators, fieldValidator)
+			// }
+			// field.SetValidators(fieldValidators)
 
 			form.Fields = append(form.Fields, field)
 		}
@@ -104,10 +111,14 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 	}
 }
 
-func (form *Form) Unmarshal(jsonBytes []byte) {
+func UnmarshalFormMeta(jsonBytes []byte) FormMeta {
 	meta := FormMeta{}
 	webapp.Panic(json.Unmarshal(jsonBytes, &meta))
-	form.CreateFromMeta(meta)
+	return meta
+}
+
+func (form *Form) Unmarshal(jsonBytes []byte) {
+	form.CreateFromMeta(UnmarshalFormMeta(jsonBytes))
 }
 
 func (form Form) Marshal() []byte {

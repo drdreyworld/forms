@@ -1,6 +1,7 @@
 package fields
 
 import (
+	"fmt"
 	"github.com/drdreyworld/forms/validators"
 )
 
@@ -60,7 +61,10 @@ func (field Checkbox) GetValue() interface{} {
 }
 
 func (field *Checkbox) SetValue(value interface{}) {
-	field.Value = value.(int)
+	var ok bool
+	if field.Value, ok = value.(int); !ok {
+		fmt.Println("fuck checkbox")
+	}
 }
 
 func (field *Checkbox) IsValid(value interface{}) (result bool, err *string) {
