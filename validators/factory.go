@@ -26,5 +26,5 @@ func (factory ValidatorsFactory) CreateValidator(meta ValidatorMeta) (result Val
 	if prototype, exists := factory.registry[meta.Type]; exists {
 		return prototype.Create(meta), nil
 	}
-	return nil, errors.New(fmt.Sprintf("Validator type not registered '%s'", meta.Type))
+	return nil, errors.New(fmt.Sprintf("Validator type not registered '%s'", meta.Type, meta))
 }

@@ -12,8 +12,8 @@ type Field interface {
 	GetName() string
 	SetName(name string)
 	GetValue() interface{}
-	SetValue(value interface{})
-	IsValid(value interface{}) (result bool, err *string)
+	SetValue(value interface{}) (ok bool)
+	IsValid(value interface{}) (result bool)
 	GetOrder() int
 	SetOrder(order int)
 	SetValidators(validators validators.Validators)

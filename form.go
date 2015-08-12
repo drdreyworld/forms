@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/drdreyworld/forms/fields"
-	// "github.com/drdreyworld/forms/validators"
+	"github.com/drdreyworld/forms/validators"
 	"github.com/drdreyworld/webapp"
 	"html/template"
 	"net/http"
@@ -39,8 +39,7 @@ func (form *Form) GetTemplatesPath() string {
 func (form *Form) IsValid(r *http.Request) bool {
 	result := true
 	for _, field := range form.Fields {
-		isValid, _ := field.IsValid(r.PostFormValue(field.GetName()))
-		result = isValid && result
+		result = field.IsValid(r.PostFormValue(field.GetName())) && result
 	}
 	return result
 }
@@ -90,13 +89,14 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 			field, err := fields.Factory.CreateField(item)
 			webapp.Panic(err)
 
-			// fieldValidators := make(validators.Validators, 0, len(item.Validators))
-			// for _, validatorMeta := range item.Validators {
-			// 	fieldValidator, err := validators.Factory.CreateValidator(validatorMeta)
-			// 	webapp.Panic(err)
-			// 	fieldValidators = append(fieldValidators, fieldValidator)
-			// }
-			// field.SetValidators(fieldValidators)
+			fieldValidators := make(validators.Validators, 0, len(item.Validators))
+
+			for _, validatorMeta := range item.Validators {
+				if fieldValidator, err := validators.Factory.CreateValidator(validatorMeta); err == nil {
+					fieldValidators = append(fieldValidators, fieldValidator)
+				}
+			}
+			field.SetValidators(fieldValidators)
 
 			form.Fields = append(form.Fields, field)
 		}
