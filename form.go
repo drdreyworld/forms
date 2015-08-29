@@ -39,8 +39,7 @@ func (form *Form) GetTemplatesPath() string {
 func (form *Form) IsValid(r *http.Request) bool {
 	result := true
 	for _, field := range form.Fields {
-		isValid, _ := field.IsValid(r.PostFormValue(field.GetName()))
-		result = isValid && result
+		result = field.IsValid(r.PostFormValue(field.GetName())) && result
 	}
 	return result
 }
@@ -51,6 +50,13 @@ func (form *Form) GetValues() map[string]interface{} {
 		result[field.GetName()] = field.GetValue()
 	}
 	return result
+}
+
+func (form *Form) GetValue(name string) interface{} {
+	if field, ok := form.Fields.GetField(name); ok {
+		return field.GetValue()
+	}
+	return nil
 }
 
 func (form *Form) RenderField(field fields.Field) template.HTML {
@@ -84,10 +90,11 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 			webapp.Panic(err)
 
 			fieldValidators := make(validators.Validators, 0, len(item.Validators))
+
 			for _, validatorMeta := range item.Validators {
-				fieldValidator, err := validators.Factory.CreateValidator(validatorMeta)
-				webapp.Panic(err)
-				fieldValidators = append(fieldValidators, fieldValidator)
+				if fieldValidator, err := validators.Factory.CreateValidator(validatorMeta); err == nil {
+					fieldValidators = append(fieldValidators, fieldValidator)
+				}
 			}
 			field.SetValidators(fieldValidators)
 
@@ -104,10 +111,14 @@ func (form *Form) CreateFromMeta(meta FormMeta) {
 	}
 }
 
-func (form *Form) Unmarshal(jsonBytes []byte) {
+func UnmarshalFormMeta(jsonBytes []byte) FormMeta {
 	meta := FormMeta{}
 	webapp.Panic(json.Unmarshal(jsonBytes, &meta))
-	form.CreateFromMeta(meta)
+	return meta
+}
+
+func (form *Form) Unmarshal(jsonBytes []byte) {
+	form.CreateFromMeta(UnmarshalFormMeta(jsonBytes))
 }
 
 func (form Form) Marshal() []byte {
